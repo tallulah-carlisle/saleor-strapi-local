@@ -106,7 +106,7 @@ jobs:
             argocd app sync saleor-strapi --replace --prune --force
           else 
             echo "Application saleor-strapi does not exist"
-            argocd app create saleor-strapi --repo git@github.com:NTTDATA-UK-DEA/saleor-strapi-local.git --dest-server https://kubernetes.default.svc --dest-namespace saleor-k8s-dev  --path charts/saleor-platform 
+            argocd app create saleor-strapi --repo git@github.com:tallulah-carlisle/saleor-strapi-local.git --dest-server https://kubernetes.default.svc --dest-namespace saleor-k8s-dev  --path charts/saleor-platform 
           fi 
 
 # argocd app sync saleor-strapi
