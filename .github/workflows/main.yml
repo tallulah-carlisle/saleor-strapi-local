@@ -15,19 +15,11 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
-  # This workflow contains a single job called "set_up"
-  set_up:
+  test:
     runs-on: ubuntu-latest
      # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v3
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-           aws-region: eu-west-2
        
        # Set up Python
       - uses: actions/setup-python@v2
@@ -44,6 +36,17 @@ jobs:
       - name: Run Chart-Testing (lint)
         run: ct lint --all --validate-maintainers=false
        
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+           aws-region: eu-west-2
+      
       # Create dump from saleor database
       - name: Postgres Dump Backup
         uses: tj-actions/pg-dump@v2.3
@@ -69,18 +72,15 @@ jobs:
             helm upgrade --install saleor-strapi --namespace saleor-k8s-dev --values charts/saleor-platform/values.yaml ./charts/saleor-platform 
             kubectl exec -it saleor-strapi-postgresql-0 -n saleor-k8s-dev -- psql postgres://postgres:dpkvvVpy5ZaSB2CP@saleor-strapi-postgresql:5432/saleor-db < saleor.dump  
   
-  # This workflow contains a single job called "argocd_sync"
-  argocd:
+  deploy:
     runs-on: ubuntu-latest
-    needs: set_up
+    needs: build
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Install Argocd CLI
         run: |
           curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
           chmod +x /usr/local/bin/argocd
-          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          chmod +x kubectl
 
       # Argocd login and create 'saleor-strapi' app if it doesn't already exist
       - name: Create Argocd Application
@@ -91,7 +91,7 @@ jobs:
           if [[ " ${APPS[*]} " =~ "saleor-strapi" ]]
           then
             echo "Application saleor-strapi exists"
-            argocd app sync saleor-strapi --replace --prune --force
+            # argocd app sync saleor-strapi --replace --prune --force
           else 
             echo "Application saleor-strapi does not exist"
             argocd app create saleor-strapi --repo git@github.com:tallulah-carlisle/saleor-strapi-local.git --dest-server https://kubernetes.default.svc --dest-namespace saleor-k8s-dev  --path charts/saleor-platform 
