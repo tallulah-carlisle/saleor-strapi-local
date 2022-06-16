@@ -1,0 +1,115 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Deploy Saleor-Strapi
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+
+  # This workflow contains a single job called "set_up"
+  set_up:
+    runs-on: ubuntu-latest
+     # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+       # Connect to cluster
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+           aws-region: eu-west-2
+       
+       # Set up Python
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+       
+       # Set up Chart Testing to lint helm charts
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2.2.1
+        with:
+          version: v3.5.1
+       
+       # Lint helm charts
+      - name: Run chart-testing (lint)
+        run: ct lint --all --validate-maintainers=false
+       
+      - name: Postgres Dump Backup
+        uses: tj-actions/pg-dump@v2.3
+        with:
+          database_url: "postgres://postgres:dpkvvVpy5ZaSB2CP@saleor-db.cnriqanxmgua.eu-west-2.rds.amazonaws.com:5432/saleor-db"
+          path: "saleor.dump" 
+          options: "-O"   
+
+       # Deploy helm charts to the cluster
+      - name: Helm Deploy
+        uses: koslibpro/helm-eks-action@master
+        env:
+           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          command: |
+            aws eks --region eu-west-2 update-kubeconfig --name cloudnative-poc
+            cd charts/saleor-platform/
+            helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+            helm repo add nfs-server-provisioner https://kvaps.github.io/charts
+            helm repo update
+            helm dependency update
+            cd ../..
+            helm upgrade --install saleor-strapi --namespace saleor-k8s-dev --values charts/saleor-platform/values.yaml ./charts/saleor-platform 
+            kubectl exec -it saleor-strapi-postgresql-0 -n saleor-k8s-dev -- psql postgres://postgres:dpkvvVpy5ZaSB2CP@saleor-strapi-postgresql:5432/saleor-db < saleor.dump
+      
+      # - name: Import data to saleor-db
+      #   run: |
+      #     kubectl get pods -n saleor-k8s-dev
+      #     kubectl exec -it saleor-strapi-postgresql-0 -n saleor-k8s-dev -- psql postgres://postgres:dpkvvVpy5ZaSB2CP@saleor-strapi-postgresql:5432/saleor-db < saleor.dump
+      
+      # - name: Postgres Backup Restore
+      #   uses: tj-actions/pg-restore@v4.5
+      #   with:
+      #     database_url: "postgres://postgres:${{ secrets.POSTGRES_PASSWORD }}@localhost:8080/saleor-db"
+      #     backup_file: "saleor.sql"  
+  
+  # This workflow contains a single job called "argocd_sync"
+  argocd_sync:
+    runs-on: ubuntu-latest
+    needs: set_up
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Install argocd cli
+        run: |
+          curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+          chmod +x /usr/local/bin/argocd
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+      
+      - name: argocd login
+        run: | 
+          argocd login argocd.hack.cloudnative.nttdatauk.cloud --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }}
+          LIST=$(argocd app list -o name)
+          APPS=($LIST)
+          if [[ " ${APPS[*]} " =~ "saleor-strapi" ]]
+          then
+            echo "Application saleor-strapi exists"
+            argocd app sync saleor-strapi --replace --prune --force
+          else 
+            echo "Application saleor-strapi does not exist"
+            argocd app create saleor-strapi --repo git@github.com:NTTDATA-UK-DEA/saleor-strapi.git --dest-server https://kubernetes.default.svc --dest-namespace saleor-k8s-dev  --path charts/saleor-platform 
+          fi 
+
+# argocd app sync saleor-strapi
+# echo ${{ secrets.POSTGRES_PASSWORD }} | kubectl exec -i -t -n saleor-k8s-dev saleor-strapi-postgresql-0 -c saleor-strapi-postgresql -- pg_restore -U postgres -d saleor-db < saleor.dump
+# psql postgres://postgres:dpkvvVpy5ZaSB2CP@localhost:8080/saleor-db < saleor.dump  
+# psql postgres://postgres:${{ secrets.POSTGRES_PASSWORD }}@saleor-k8s-dev-saleor-core-api.hack.cloudnative.nttdatauk.cloud:80/saleor-db < saleor.dump  

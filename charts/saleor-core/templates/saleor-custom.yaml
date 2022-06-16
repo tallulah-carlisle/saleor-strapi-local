@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Secret
+type: Generic
+metadata:
+  name: saleor-custom
+data:
+  EMAIL_PASSWORD: "dGVzdA=="
+  POSTGRESQL_PASSWORD: "ZHBrdnZWcHk1WmFTQjJDUA=="
+  REDIS_PASSWORD: "dGVzdA=="
+  postgresql-password: "ZHBrdnZWcHk1WmFTQjJDUA=="
+  redis-password: "dGVzdA=="

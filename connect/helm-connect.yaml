@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: saleor-strapi
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:NTTDATA-UK-DEA/saleor-strapi.git
+    targetRevision: main
+    path: charts/saleor-platform
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: saleor-k8s-dev
+  syncPolicy:
+    # automated:
+    #   selfHeal: true
+    #   prune: true
+    syncOptions:
+      - CreateNamespace=true

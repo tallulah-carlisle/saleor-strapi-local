@@ -1,0 +1,25 @@
+{{- if .Values.usePersistence }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: strapi-volume
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efs-sc3
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: strapi-api-volume
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efs-sc3
+  resources:
+    requests:
+      storage: 1Gi
+{{- end }}

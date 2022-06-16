@@ -1,0 +1,269 @@
+# @format
+
+# TODO
+
+postgresql:
+  enabled: true
+  persistence:
+    existingClaim: pgdata-pvc
+  volumePermissions:
+    enabled: true
+  image:
+    registry: docker.io
+    repository: bitnami/postgresql
+    tag: 11.9.0-debian-10-r73
+    pullPolicy: IfNotPresent
+    debug: true
+  postgresqlUsername: "postgres"
+  postgresqlDatabase: "saleor-db"
+  postgresqlPassword: "dpkvvVpy5ZaSB2CP"
+  resources:
+    requests:
+      cpu: 125m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  psp:
+    create: false
+  rbac:
+    create: false
+  replication:
+    enabled: false
+
+redis:
+  enabled: true
+  persistence:
+    existingClaim: redis-pvc
+  existingSecret: saleor-custom
+  usePassword: true
+  cluster:
+    enabled: false
+
+nfs:
+  enabled: false
+
+saleor-core:
+  enabled: true
+  environment: "dev"
+  persistence:
+    existingClaim: core-pvc
+
+  worker:
+    replicaCount: 1
+    autoscaling:
+      enabled: false
+    livenessProbeSettings:
+      enabled: false
+    readinessProbeSettings:
+      enabled: false
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+
+  api:
+    replicaCount: 1
+    autoscaling:
+      enabled: false
+
+  web:
+    replicaCount: 1
+    autoscaling:
+      enabled: false
+
+  existingSecret: saleor-custom
+
+  image:
+    repository: 889605739882.dkr.ecr.eu-west-2.amazonaws.com/dea/saleor-k8s_saleor_core
+    pullPolicy: IfNotPresent
+    tag: "0.0.11"
+  initImage:
+    repository: ghcr.io/eirenauts/saleor-core
+    pullPolicy: IfNotPresent
+    tag: ""
+
+  ingress:
+    enabled: false
+#    annotations:
+#      cert-manager.io/cluster-issuer: default-issuer
+#      ingress.kubernetes.io/force-ssl-redirect: "true"
+#      kubernetes.io/ingress.class: nginx
+#      kubernetes.io/tls-acme: "true"
+      # If using linkerd2
+      # nginx.ingress.kubernetes.io/configuration-snippet: |
+      #   proxy_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+#    hosts:
+#      - host: "{{ core_hostname }}"
+#        paths:
+#          - /
+#    tls:
+#      - secretName: saleor-core-tls-key
+#        hosts:
+#          - "{{ core_hostname }}"
+
+  ## Configuration Settings
+  mediaUrl: https://nttdatauk-dea-saleor-images.s3.eu-west-2.amazonaws.com/eu-west-2/
+  graphql:
+    playgroundEnabled: true
+  enableDjangoDebugToolbar: false
+  defaultCountry: UK
+  defaultCurrency: GBP
+  maxCartLineQuantity: 100
+  allowedHosts:
+    includeIngressHosts: true
+    hosts: []
+  tokens:
+    jwt:
+      accessTokenExpires: true
+      accessTokenExpiresIn: "120 minutes"
+      refreshTokenExpiresIn: "30 days"
+      emailChangeRequestTokenExpiresIn: "1 hour"
+  allowablePlugins:
+    - "saleor.plugins.vatlayer.plugin.VatlayerPlugin"
+    - "saleor.plugins.invoicing.plugin.InvoicingPlugin"
+    - "saleor.payment.gateways.braintree.plugin.BraintreeGatewayPlugin"
+    - "saleor.payment.gateways.dummy.plugin.DummyGatewayPlugin"
+
+  ## Helm hook job settings
+
+  jobs:
+    init:
+      migrations:
+        enabled: false
+        ttlSecondsAfterFinished: 1800
+        weight: 1
+      createUsers:
+        enabled: true
+        ttlSecondsAfterFinished: 1800
+        activeDeadlineSeconds: 600
+        weight: 2
+        users:
+          - email: "admin@example.com"
+            password: "admin"
+            isStaff: true
+            isSuperuser: true
+      currencyUpdates:
+        enabled: false
+        openExchangesApiKey: ""
+        ttlSecondsAfterFinished: 1800
+        activeDeadlineSeconds: 600
+        weight: 3
+      plugins:
+        enabled: false
+        ttlSecondsAfterFinished: 1800
+        activeDeadlineSeconds: 600
+        backOffLimit: 10
+        weight: 4
+
+  ## External Services settings
+
+  externalServices:
+    # Redis is a caching mechanism
+    redis:
+      # Leave empty in `values.yaml` for security reasons, set in a secret
+      password: "test"
+      host: "saleor-strapi-redis-master"
+      # tls true => use redis in url instead of redis
+      tls: false
+      port: 6379
+      dbNumber: 0
+      celeryBrokerDbNumber: 1
+
+    # Postgresql is the primary database
+    postgresql:
+      # Leave empty in `values.yaml` for security reasons, set in a secret
+      password: "dpkvvVpy5ZaSB2CP"
+      user: "postgres"
+      host: "saleor-strapi-postgresql"
+      port: 5432
+      database: saleor-db
+      requireSSL: false
+
+    # Sentry for application exception monitoring
+    sentry:
+      enabled: false
+      # Leave empty in `values.yaml` for security reasons, set in a secret
+      dsn:
+
+    # Email Configuration [ For sending emails ]
+    email:
+      defaultFromEmail: do-not-reply@nttdata.com
+      # if orderFromEmail is unset, will default to defaultFromEmail
+      orderFromEmail: do-not-reply@nttdata.com
+      smtpSettings:
+        generic:
+          enabled: false
+          loginName: <REDACTED>
+          customDomainName: <REDACTED>
+          providerDomainName: smtp.mailgun.org
+          port: 465
+          extraArgs: "?ssl=True"
+
+    # Google recaptcha key
+    googleRecaptcha:
+      publicKey: "<REDACTED>"
+
+    # Use nginx server for /static and /media assets instead of cloudstorage
+    cloudStorage:
+      enabled: false
+
+    # Enable Vatlayer API to fetch taxes for different classes of items
+    vatLayer:
+      enabled: false
+
+    braintree:
+      enabled: false
+      sandboxMode: true
+      require3DSecure: false
+      merchantId: "<REDACTED>"
+      publicKey: "<REDACTED>"
+      currencies: "<REDACTED>"
+      # The privateKey is set as a secret in an 'existingSecret'
+      privateKey:
+
+saleor-storefront:
+  enabled: false
+
+strapi-cms:
+  enabled: true
+  environment: dev
+  replicaCount: 1
+  autoscaling:
+    enabled: false
+
+saleor-dashboard:
+  enabled: true
+  environment: dev
+  replicaCount: 1
+  autoscaling:
+    enabled: false
+
+  image:
+    repository: ghcr.io/eirenauts/saleor-dashboard
+    pullPolicy: IfNotPresent
+    tag: 2.11.1
+
+  ingress:
+    enabled: false
+#    annotations:
+#      cert-manager.io/cluster-issuer: default-issuer
+#      ingress.kubernetes.io/force-ssl-redirect: "true"
+#      kubernetes.io/ingress.class: nginx
+      # nginx.ingress.kubernetes.io/configuration-snippet: |
+      #   proxy_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+#    hosts:
+#      - host: "{{ dashboard_hostname }}"
+#        paths:
+#          - /
+#    tls:
+#      - secretName: saleor-dashboard-tls-key
+#        hosts:
+#          - "{{ dashboard_hostname }}"
+  dashUrl: "https://saleor-k8s-dev-saleor-dashboard.hack.cloudnative.nttdatauk.cloud/dashboard/"
+  staticUrl: "https://nttdatauk-dea-saleor-images.s3.eu-west-2.amazonaws.com/eu-west-2/"
+  apiUrl: "https://saleor-k8s-dev-saleor-core-api.hack.cloudnative.nttdatauk.cloud/graphql/"
+  apiMountUri: "/dashboard/"
