@@ -50,6 +50,7 @@ spec:
             - -c
             # - psql -U postgres -tc "SELECT 1 FROM pg_database WHERE datname = 'strapi'" | grep -q 1 | psql -U postgres -c "CREATE DATABASE strapi"
             - psql -h {{ .Values.env.DATABASE_HOST }} -U postgres -d saleor-db -c "SELECT 'CREATE DATABASE strapi'WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'strapi')"
+            - if (psql -h {{ .Values.env.DATABASE_HOST }} -U postgres -d saleor-db -c "select count(*) from pg_class c join pg_namespace s on s.oid = c.relnamespace where s.nspname not in ('pg_catalog', 'information_schema') and s.nspname not like 'pg_temp%';");then echo "database has tables"
             - echo "Nttdata12345" | pg_dump -h saleor-db.cnriqanxmgua.eu-west-2.rds.amazonaws.com -p 5432 -d strapi -U postgres -W -f strapi.dump
             - psql postgres://postgres:{{ .Values.env.DATABASE_PASSWORD }}@{{ .Values.env.DATABASE_HOST }}:5432/strapi < strapi.dump  
       containers:
