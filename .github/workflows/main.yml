@@ -72,8 +72,8 @@ jobs:
             helm dependency update
             cd ../..
             helm upgrade --install saleor-strapi --namespace saleor-k8s-dev --values charts/saleor-platform/values.yaml ./charts/saleor-platform 
-            kubectl exec -it saleor-strapi-postgresql-0 -n saleor-k8s-dev -- echo {{ secrets.POSTGRES_PASSWORD }} | if (psql -h {{ .Values.env.DATABASE_HOST }} -U postgres -d saleor-db -c "select count(*) from pg_class c join pg_namespace s on s.oid = c.relnamespace where s.nspname not in ('pg_catalog', 'information_schema') and s.nspname not like 'pg_temp%';");then echo "database has tables"; else echo "database has no tables"; fi
-            psql postgres://postgres:dpkvvVpy5ZaSB2CP@saleor-strapi-postgresql:5432/saleor-db < saleor.dump  
+            kubectl exec -it saleor-strapi-postgresql-0 -n saleor-k8s-dev -- echo {{ secrets.POSTGRES_PASSWORD }} | if (psql -h {{ .Values.env.DATABASE_HOST }} -U postgres -d saleor-db -c "select count(saleor-db) from pg_class c join pg_namespace s on s.oid = c.relnamespace where s.nspname not in ('pg_catalog', 'information_schema') and s.nspname not like 'pg_temp%';");then echo "database has tables"; else psql postgres://postgres:dpkvvVpy5ZaSB2CP@saleor-strapi-postgresql:5432/saleor-db < saleor.dump; fi 
+            
   
   deploy:
     runs-on: ubuntu-latest
