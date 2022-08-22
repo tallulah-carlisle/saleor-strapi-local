@@ -5,8 +5,8 @@ metadata:
   labels:
     {{- include "saleor-storefront.labels" . | nindent 4 }}
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    app.kubernetes.io/name: "saleor-strapi"
-    app.kubernetes.io/instance: "saleor-strapi"
+    app.kubernetes.io/name: "saleor-k8s-dev"
+    app.kubernetes.io/instance: "saleor-k8s-dev"
     {{- if .Chart.AppVersion }}
     app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
     {{- end }}
@@ -18,9 +18,9 @@ spec:
   selector:
     matchLabels:
       {{- include "saleor-storefront.selectorLabels" . | nindent 6 }}
-      app: "saleor-strapi"
-      app.kubernetes.io/name: "saleor-strapi"
-      app.kubernetes.io/instance: "saleor-strapi"
+      app: "saleor-k8s-dev"
+      app.kubernetes.io/name: "saleor-k8s-dev"
+      app.kubernetes.io/instance: "saleor-k8s-dev"
   template:
     metadata:
       {{- with .Values.podAnnotations }}

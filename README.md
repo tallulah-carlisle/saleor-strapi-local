@@ -1,4 +1,4 @@
-# Deploy Saleor-Strapi App
+# Deploy saleor-k8s-dev App
 
 ## Introduction
 
