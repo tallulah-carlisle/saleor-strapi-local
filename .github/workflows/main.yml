@@ -72,7 +72,7 @@ jobs:
             helm dependency update
             cd ../..
             helm upgrade --install saleor-strapi --namespace saleor-k8s-dev --values charts/saleor-platform/values.yaml ./charts/saleor-platform 
-            kubectl exec -it saleor-strapi-postgresql-0 -n saleor-k8s-dev -- psql postgres://postgres:dpkvvVpy5ZaSB2CP@saleor-strapi-postgresql:5432/saleor-db < saleor.dump
+            kubectl exec -it saleor-k8s-dev-postgresql-0 -n saleor-k8s-dev -- psql postgres://postgres:dpkvvVpy5ZaSB2CP@saleor-k8s-dev-postgresql:5432/saleor-db < saleor.dump
   deploy:
     runs-on: ubuntu-latest
     needs: build
