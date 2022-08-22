@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 replicaCount: 1
-release: saleor-strapi
+release: saleor-k8s-dev
 image:
   repository: 889605739882.dkr.ecr.eu-west-2.amazonaws.com/nttdata-uk-cloudnative/strapi-cms
   tag: 0.0.26
@@ -12,7 +12,7 @@ usePersistence: true
 
 # define environment variables here as a map of key: value
 env:
-  DATABASE_HOST: saleor-strapi-postgresql
+  DATABASE_HOST: saleor-k8s-dev-postgresql
   DATABASE_PORT: 5432
   DATABASE_USERNAME: postgres
   DATABASE_PASSWORD: dpkvvVpy5ZaSB2CP

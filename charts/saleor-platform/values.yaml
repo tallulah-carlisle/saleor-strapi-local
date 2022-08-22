@@ -166,7 +166,7 @@ saleor-core:
     redis:
       # Leave empty in `values.yaml` for security reasons, set in a secret
       password: "test"
-      host: "saleor-strapi-redis-master"
+      host: "saleor-k8s-dev-redis-master"
       # tls true => use redis in url instead of redis
       tls: false
       port: 6379
@@ -178,7 +178,7 @@ saleor-core:
       # Leave empty in `values.yaml` for security reasons, set in a secret
       password: "dpkvvVpy5ZaSB2CP"
       user: "postgres"
-      host: "saleor-strapi-postgresql"
+      host: "saleor-k8s-dev-postgresql"
       port: 5432
       database: saleor-db
       requireSSL: false
