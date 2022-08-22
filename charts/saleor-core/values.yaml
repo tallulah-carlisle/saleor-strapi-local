@@ -1,7 +1,7 @@
 # @format
 
 ## Saleor worker settings
-release: saleor-strapi
+release: saleor-k8s-dev
 worker:
   replicaCount: 1
   autoscaling:
