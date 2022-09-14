@@ -45,8 +45,8 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+           aws-access-key-id: ${{ secrets.DEA_AWS_ACCESS_KEY_ID }}
+           aws-secret-access-key: ${{ secrets.DEA_AWS_SECRET_ACCESS_KEY }}
            aws-region: eu-west-2
       
       # Create dump from saleor database
@@ -89,7 +89,7 @@ jobs:
       # Argocd login and create 'saleor-k8s-staging' app if it doesn't already exist
       - name: Create Argocd Application
         run: | 
-          argocd login argocd.hack.cloudnative.nttdatauk.cloud --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }}
+          argocd login argocd.hack.cloudnative.nttdatauk.cloud --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.DEA_ARGOCD_PASSWORD }}
           LIST=$(argocd app list -o name)
           APPS=($LIST)
           if [[ " ${APPS[*]} " =~ "saleor-k8s-staging" ]]
