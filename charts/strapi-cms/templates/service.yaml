@@ -22,5 +22,5 @@ spec:
     protocol: TCP
     name: http
   selector:
-    app: saleor-k8s-dev
+    app: saleor-k8s-staging
 {{- end }}

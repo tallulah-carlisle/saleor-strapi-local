@@ -3,7 +3,7 @@
 # General dashboard kubernetes settings
 
 replicaCount: 1
-release: saleor-k8s-dev
+release: saleor-k8s-staging
 image:
   repository: "nginxinc/nginx-unprivileged"
   tag: "1.19.5"

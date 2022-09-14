@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: saleor-k8s-dev
+  name: saleor-k8s-staging
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -16,7 +16,7 @@ spec:
         - values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: saleor-k8s-dev
+    namespace: saleor-k8s-staging
   syncPolicy:
     # automated:
     #   selfHeal: true

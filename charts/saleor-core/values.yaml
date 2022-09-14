@@ -1,7 +1,7 @@
 # @format
 
 ## Saleor worker settings
-release: saleor-k8s-dev
+release: saleor-k8s-staging
 worker:
   replicaCount: 1
   autoscaling:
@@ -50,14 +50,14 @@ worker:
 
 # define environment variables here as a map of key: value
 env:
-  DATABASE_HOST: saleor-k8s-dev-postgresql
+  DATABASE_HOST: saleor-k8s-staging-postgresql
   DATABASE_PORT: 5432
   DATABASE_USERNAME: postgres
   DATABASE_PASSWORD: dpkvvVpy5ZaSB2CP
   AUTHENTICATION_DATABASE: admin
   DATABASE_SSL: false
   DATABASE_CLIENT: postgres
-  AWS_BUCKET_NAME: nttdatauk-dea-saleor-images
+  AWS_BUCKET_NAME: dea-saleor-images-staging
 ## Saleor api settings
 
 api:

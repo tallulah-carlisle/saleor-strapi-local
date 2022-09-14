@@ -47,7 +47,7 @@ Selector labels
 */}}
 {{- define "saleor-storefront.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "saleor-storefront.name" . }}
-app.kubernetes.io/instance: saleor-k8s-dev
+app.kubernetes.io/instance: saleor-k8s-staging
 {{- end }}
 
 {{/*

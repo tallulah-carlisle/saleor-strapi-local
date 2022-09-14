@@ -1,4 +1,4 @@
-# Deploy saleor-k8s-dev App
+# Deploy saleor-k8s-staging App
 
 ## Introduction
 
