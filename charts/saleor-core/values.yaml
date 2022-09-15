@@ -238,7 +238,7 @@ persistence:
   # storageClass: ""
   # To use an existing PVC rather than have it provisioned by this chart,
   # uncomment and enter below
-  existingPvc: efs-pvc
+  # existingPvc: efs-pvc
 
 ## Configuration Settings
 

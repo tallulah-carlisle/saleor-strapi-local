@@ -74,8 +74,9 @@ jobs:
             cd ../..
 
             helm upgrade --install saleor-k8s-staging --namespace saleor-k8s-staging --values charts/saleor-platform/values.yaml ./charts/saleor-platform 
-            # kubectl exec -it saleor-k8s-staging-postgresql-0 -n saleor-k8s-staging -- psql postgres://postgres:dpkvvVpy5ZaSB2CP@saleor-k8s-staging-postgresql:5432/saleor-db < saleor.dump
   # deploy:
+              # kubectl exec -it saleor-k8s-staging-postgresql-0 -n saleor-k8s-staging -- psql postgres://postgres:dpkvvVpy5ZaSB2CP@saleor-k8s-staging-postgresql:5432/saleor-db < saleor.dump
+
   #   runs-on: ubuntu-latest
   #   needs: build
   #   # Steps represent a sequence of tasks that will be executed as part of the job
