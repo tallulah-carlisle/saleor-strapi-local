@@ -3,7 +3,7 @@
 # General storefront kubernetes settings
 
 replicaCount: 1
-release: saleor-k8s-staging
+release: saleor-staging
 image:
   repository: "nginxinc/nginx-unprivileged"
   tag: "1.19.5"

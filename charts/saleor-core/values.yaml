@@ -1,7 +1,7 @@
 # @format
 
 ## Saleor worker settings
-release: saleor-k8s-staging
+release: saleor-staging
 worker:
   replicaCount: 1
   autoscaling:
@@ -50,7 +50,7 @@ worker:
 
 # define environment variables here as a map of key: value
 env:
-  DATABASE_HOST: saleor-k8s-staging-postgresql
+  DATABASE_HOST: saleor-staging-postgresql
   DATABASE_PORT: 5432
   DATABASE_USERNAME: postgres
   DATABASE_PASSWORD: dpkvvVpy5ZaSB2CP
