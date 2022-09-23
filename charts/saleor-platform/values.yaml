@@ -78,7 +78,7 @@ saleor-core:
   existingSecret: saleor-custom
 
   image:
-    repository: 889605739882.dkr.ecr.eu-west-2.amazonaws.com/dea/saleor-k8s_saleor_core
+    repository: 370849260309.dkr.ecr.eu-west-2.amazonaws.com/dea/saleor-k8s_saleor_core
     pullPolicy: IfNotPresent
     tag: "0.0.11"
   initImage:

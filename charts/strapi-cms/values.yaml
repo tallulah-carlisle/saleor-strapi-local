@@ -4,8 +4,8 @@
 replicaCount: 1
 release: saleor-staging
 image:
-  repository: 889605739882.dkr.ecr.eu-west-2.amazonaws.com/nttdata-uk-cloudnative/strapi-cms
-  tag: 0.0.26
+  repository: 370849260309.dkr.ecr.eu-west-2.amazonaws.com/dea/strapi-cms
+  tag: 0.0.29
   pullPolicy: IfNotPresent
 
 usePersistence: true

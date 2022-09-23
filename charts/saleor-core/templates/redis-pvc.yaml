@@ -5,7 +5,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: efs-sc2
+  storageClassName: efs-dea-sc2
   resources:
     requests:
       storage: 5Gi

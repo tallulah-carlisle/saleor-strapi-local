@@ -6,7 +6,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: efs-sc3
+  storageClassName: efs-dea-sc3
   resources:
     requests:
       storage: 5Gi
@@ -18,7 +18,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: efs-sc3
+  storageClassName: efs-dea-sc3
   resources:
     requests:
       storage: 1Gi

@@ -94,7 +94,7 @@ data:
 
       server {
         listen      {{ $port }};
-        server_name saleor-k8s-{{.Values.environment}}-saleor-dashboard.hack.cloudnative.nttdatauk.cloud;
+        server_name saleor-{{.Values.environment}}-saleor-dashboard.hack.cloudnative.nttdatauk.cloud;
         add_header Cache-Control public;
 
         location /dashboard/ {

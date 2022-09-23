@@ -10,16 +10,16 @@ metadata:
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     alb.ingress.kubernetes.io/scheme: internet-facing
-  name: saleor-k8s-{{.Values.environment}}-saleor-dashboard
+    kubernetes.io/ingress.class: alb
+  name: saleor-{{.Values.environment}}-saleor-dashboard
 spec:
-  ingressClassName: aws-load-balancer
   rules:
-  - host: saleor-k8s-{{.Values.environment}}-saleor-dashboard.hack.cloudnative.nttdatauk.cloud
+  - host: saleor-{{.Values.environment}}-saleor-dashboard.hack.cloudnative.nttdatauk.cloud
     http:
       paths:
       - backend:
           service:
-            name: saleor-k8s-{{.Values.environment}}-saleor-dashboard
+            name: saleor-{{.Values.environment}}-saleor-dashboard
             port:
               number: 80
         path: /

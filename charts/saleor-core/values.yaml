@@ -139,7 +139,7 @@ web:
   nodeSelector: {}
   tolerations: []
   image:
-    repository: "889605739882.dkr.ecr.eu-west-2.amazonaws.com/nginxinc/nginx-unprivileged"
+    repository: "370849260309.dkr.ecr.eu-west-2.amazonaws.com/nginxinc/nginx-unprivileged"
     tag: "1.19.5"
     pullPolicy: IfNotPresent
   port: 8080
@@ -235,10 +235,10 @@ persistence:
   size: 8Gi
   volumeMode: Filesystem
   # Uncomment storageClass: "" to disable dynamic provisioning
-  # storageClass: ""
+  # storageClass: "efs-dea"
   # To use an existing PVC rather than have it provisioned by this chart,
   # uncomment and enter below
-  # existingPvc: efs-pvc
+  existingPvc: efs-pvc
 
 ## Configuration Settings
 

@@ -11,10 +11,10 @@ metadata:
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     alb.ingress.kubernetes.io/scheme: internet-facing
+    kubernetes.io/ingress.class: alb
 spec:
-  ingressClassName: aws-load-balancer
   rules:
-  - host: strapi-cms-k8s-{{.Values.environment}}.hack.cloudnative.nttdatauk.cloud
+  - host: strapi-cms-{{.Values.environment}}.hack.cloudnative.nttdatauk.cloud
     http:
       paths:
       - backend:
