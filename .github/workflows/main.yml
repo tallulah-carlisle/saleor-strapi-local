@@ -64,7 +64,7 @@ jobs:
            KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
           command: |
-            aws eks --region eu-west-2 update-kubeconfig --name dea-01
+            aws eks --region eu-west-2 update-kubeconfig --name dea-01 --role-arn arn:aws:iam::370849260309:role/terraform-eks
             kubectl config use-context arn:aws:eks:eu-west-2:370849260309:cluster/dea-01
             cd charts/saleor-platform/
             helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
