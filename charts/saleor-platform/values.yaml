@@ -263,7 +263,7 @@ saleor-dashboard:
 #      - secretName: saleor-dashboard-tls-key
 #        hosts:
 #          - "{{ dashboard_hostname }}"
-  dashUrl: "https://saleor-staging-saleor-dashboard.hack.cloudnative.nttdatauk.cloud/dashboard/"
+  dashUrl: "https://saleor-staging-saleor-dashboard.dea.cloudnative.nttdatauk.cloud/dashboard/"
   staticUrl: "https://dea-saleor-images-staging.s3.eu-west-2.amazonaws.com/eu-west-2/"
-  apiUrl: "https://saleor-staging-saleor-core-api.hack.cloudnative.nttdatauk.cloud/graphql/"
+  apiUrl: "https://saleor-staging-saleor-core-api.dea.cloudnative.nttdatauk.cloud/graphql/"
   apiMountUri: "/dashboard/"

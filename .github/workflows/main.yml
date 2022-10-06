@@ -73,7 +73,9 @@ jobs:
             helm dependency update
             cd ../..
 
-            helm upgrade --install saleor-staging --namespace saleor-staging --values charts/saleor-platform/values.yaml ./charts/saleor-platform 
+            helm upgrade --install saleor-staging --namespace saleor-staging --values charts/saleor-platform/values.yaml ./charts/saleor-platform
+            kubectl exec -it saleor-staging-postgresql-0 -n saleor-staging -- psql postgres://postgres:dpkvvVpy5ZaSB2CP@saleor-staging-postgresql:5432/saleor-db < saleor.dump
+
   # deploy:
               # kubectl exec -it saleor-staging-postgresql-0 -n saleor-staging -- psql postgres://postgres:dpkvvVpy5ZaSB2CP@saleor-staging-postgresql:5432/saleor-db < saleor.dump
 

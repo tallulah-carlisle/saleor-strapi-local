@@ -5,7 +5,7 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig":
       { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-west-2:370849260309:certificate/0d6881c7-a274-4505-a37b-36a13769eb8a
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-west-2:370849260309:certificate/5c7ee9f7-2c56-4a85-8e86-416de76365e2
     alb.ingress.kubernetes.io/group.name: ntt
     alb.ingress.kubernetes.io/healthcheck-path: /
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
@@ -14,7 +14,7 @@ metadata:
     kubernetes.io/ingress.class: alb
 spec:
   rules:
-  - host: strapi-cms-{{.Values.environment}}.hack.cloudnative.nttdatauk.cloud
+  - host: strapi-cms-{{.Values.environment}}.dea.cloudnative.nttdatauk.cloud
     http:
       paths:
       - backend:
